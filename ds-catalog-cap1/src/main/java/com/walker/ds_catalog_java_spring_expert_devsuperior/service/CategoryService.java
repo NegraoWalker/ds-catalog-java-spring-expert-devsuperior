@@ -24,7 +24,6 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    //Métodos para CRUD:
     @Transactional(readOnly = true)
     public Page<CategoryDTO> findAll(Pageable pageable) {
         return categoryRepository.findAll(pageable).map(CategoryDTO::new);

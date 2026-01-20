@@ -21,7 +21,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    //Endpoints de CRUD:
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable) {
         Page<CategoryDTO> page = categoryService.findAll(pageable);

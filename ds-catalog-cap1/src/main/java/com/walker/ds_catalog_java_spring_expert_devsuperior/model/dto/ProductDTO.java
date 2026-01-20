@@ -1,53 +1,49 @@
-package com.walker.ds_catalog_java_spring_expert_devsuperior.model.domain;
+package com.walker.ds_catalog_java_spring_expert_devsuperior.model.dto;
 
-import jakarta.persistence.*;
+import com.walker.ds_catalog_java_spring_expert_devsuperior.model.domain.Category;
+import com.walker.ds_catalog_java_spring_expert_devsuperior.model.domain.Product;
 
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "products")
-public class Product {
+public class ProductDTO {
     //Fields:
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(columnDefinition = "TEXT")
     private String description;
     private Double price;
-    private String img_Url;
-    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private String imgUrl;
     private Instant date;
-    @ManyToMany
-    @JoinTable(name = "products_categories",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    Set<Category> categories = new HashSet<>();
+    private List<CategoryDTO> categories = new ArrayList<>();
 
     //Constructors:
-    public Product() {
+    public ProductDTO() {
     }
 
-    public Product(Long id, String name, String description, Double price, String img_Url, Instant date) {
+    public ProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.img_Url = img_Url;
+        this.imgUrl = imgUrl;
         this.date = date;
     }
 
-    public Product(Long id, String name, String description, Double price, String img_Url, Instant date, Set<Category> categories) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.img_Url = img_Url;
-        this.date = date;
-        this.categories = categories;
+    public ProductDTO(Product product) {
+        this.id = product.getId();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.imgUrl = product.getImg_Url();
+        this.date = product.getDate();
+    }
+
+    public ProductDTO(Product product, Set<Category> categories) {
+        this(product);
+        categories.forEach(category -> this.categories.add(new CategoryDTO(category)));
     }
 
     //Getters and Setters:
@@ -83,12 +79,12 @@ public class Product {
         this.price = price;
     }
 
-    public String getImg_Url() {
-        return img_Url;
+    public String getImgUrl() {
+        return imgUrl;
     }
 
-    public void setImg_Url(String img_Url) {
-        this.img_Url = img_Url;
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public Instant getDate() {
@@ -99,11 +95,11 @@ public class Product {
         this.date = date;
     }
 
-    public Set<Category> getCategories() {
+    public List<CategoryDTO> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Category> categories) {
+    public void setCategories(List<CategoryDTO> categories) {
         this.categories = categories;
     }
 
@@ -111,8 +107,8 @@ public class Product {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
+        ProductDTO that = (ProductDTO) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override

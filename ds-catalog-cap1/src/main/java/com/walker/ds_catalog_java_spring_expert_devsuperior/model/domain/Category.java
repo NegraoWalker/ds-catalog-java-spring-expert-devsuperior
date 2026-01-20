@@ -68,6 +68,17 @@ public class Category {
         this.updatedAt = updatedAt;
     }
 
+    //Métodos personalizados:
+    @PrePersist
+    public void prePersist() {
+        createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
+    }
+
     //Equals and Hashcode:
     @Override
     public boolean equals(Object o) {
