@@ -1,6 +1,8 @@
 package com.walker.ds_catalog_java_spring_expert_devsuperior.repository;
 
 import com.walker.ds_catalog_java_spring_expert_devsuperior.model.domain.Product;
+import com.walker.ds_catalog_java_spring_expert_devsuperior.util.Factory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +11,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class ProductRepositoryTest {
@@ -19,10 +21,12 @@ public class ProductRepositoryTest {
 
     //Variáveis
     private Long existingId;
+    private Long countTotalProducts;
 
     @BeforeEach //Usado para inicialização
     void setUp() {
         existingId = 1L;
+        countTotalProducts = 25L;
     }
 
     @Test
@@ -32,6 +36,19 @@ public class ProductRepositoryTest {
         productRepository.deleteById(existingId);
         Optional<Product> result = productRepository.findById(existingId);
         //Assert
-        assertFalse(result.isPresent());
+        assertFalse(result.isPresent()); //result.isPresent() == true -> quando o valor está presente. Caso contrário false.
+    }
+
+    @Test
+    @DisplayName("Deve salvar o objeto quando o ID é nulo")
+    void should_SaveObject_When_IdIsNull() {
+        //Arrange
+        Product product = Factory.createProduct();
+        product.setId(null); //O Spring Data JPA, ao ver que o ID é null, entende que é um INSERT (não um UPDATE). O banco então gera o próximo ID automaticamente via GenerationType.IDENTITY.
+        //Act
+        Product result = productRepository.save(product);
+        //Assert
+        assertNotNull(result.getId());
+        assertEquals(countTotalProducts + 1, result.getId());
     }
 }
