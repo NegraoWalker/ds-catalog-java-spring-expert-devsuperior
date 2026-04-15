@@ -34,7 +34,7 @@ public class ProductRepositoryTest {
 
     @Test
     @DisplayName("Deve deletar o objeto quando o ID existe")
-    public void should_DeleteObject_When_IdExists() {
+    public void deleteById_should_DeleteObject_WhenIdExists() {
         //Act
         productRepository.deleteById(existingId);
         Optional<Product> result = productRepository.findById(existingId);
@@ -44,7 +44,7 @@ public class ProductRepositoryTest {
 
     @Test
     @DisplayName("Deve salvar o objeto quando o ID é nulo")
-    public void should_SaveObject_When_IdIsNull() {
+    public void save_should_SaveObject_WhenIdIsNull() {
         //Arrange
         Product product = Factory.createProduct();
         product.setId(null); //O Spring Data JPA, ao ver que o ID é null, entende que é um INSERT (não um UPDATE). O banco então gera o próximo ID automaticamente via GenerationType.IDENTITY.
@@ -57,7 +57,7 @@ public class ProductRepositoryTest {
 
     @Test
     @DisplayName("Deve retornar um Optional de Produto não vazio quando o ID for válido")
-    public void should_ReturnOptionalProduct_When_IdIsValid() {
+    public void findById_should_ReturnOptionalProduct_WhenIdIsValid() {
         //Act
         Optional<Product> result = productRepository.findById(existingId);
         // Assert
@@ -66,7 +66,7 @@ public class ProductRepositoryTest {
 
     @Test
     @DisplayName("Deve retornar um Optional de Produto vazio quando o ID não for válido")
-    public void should_ReturnOptionalProductEmpty_When_IdIsNotValid() {
+    public void findById_should_ReturnOptionalEmpty_WhenIdIsInvalid() {
         // Act
         Optional<Product> result = productRepository.findById(nonExistingId);
         // Assert
