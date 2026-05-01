@@ -12,7 +12,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//TESTE DE INTEGRAÇÃO
 @DataJpaTest
 public class ProductRepositoryTest {
     //Injeção de dependências

@@ -28,7 +28,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-//TESTE UNITÁRIO
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
