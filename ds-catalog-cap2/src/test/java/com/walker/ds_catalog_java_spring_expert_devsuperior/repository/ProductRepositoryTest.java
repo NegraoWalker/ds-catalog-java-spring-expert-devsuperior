@@ -25,14 +25,14 @@ public class ProductRepositoryTest {
 
     //Usado para inicialização
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         existingId = 1L;
         nonExistingId = 200L;
         countTotalProducts = 25L;
     }
 
     @Test
-    @DisplayName("Deve deletar o objeto quando o ID existe")
+    @DisplayName("delete deve deletar o objeto quando o Id existe")
     public void deleteById_should_DeleteObject_WhenIdExists() {
         //Act
         productRepository.deleteById(existingId);
@@ -42,7 +42,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("Deve salvar o objeto quando o ID é nulo")
+    @DisplayName("save deve salvar o objeto quando o Id é nulo")
     public void save_should_SaveObject_WhenIdIsNull() {
         //Arrange
         Product product = Factory.createProduct();
@@ -55,7 +55,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("Deve retornar um Optional de Produto não vazio quando o ID for válido")
+    @DisplayName("findById deve retornar um Optional de Produto não vazio quando o Id for válido")
     public void findById_should_ReturnOptionalProduct_WhenIdIsValid() {
         //Act
         Optional<Product> result = productRepository.findById(existingId);
@@ -64,7 +64,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("Deve retornar um Optional de Produto vazio quando o ID não for válido")
+    @DisplayName("findById deve retornar um Optional de Produto vazio quando o Id não for válido")
     public void findById_should_ReturnOptionalEmpty_WhenIdIsInvalid() {
         // Act
         Optional<Product> result = productRepository.findById(nonExistingId);

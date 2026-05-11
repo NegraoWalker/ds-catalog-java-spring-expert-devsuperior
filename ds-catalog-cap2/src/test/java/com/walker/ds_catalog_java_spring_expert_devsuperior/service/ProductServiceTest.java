@@ -56,7 +56,6 @@ public class ProductServiceTest {
         page = new PageImpl<>(List.of(product));
     }
 
-    // ----------------------------- delete --------------------------------
 
     @Test
     @DisplayName("Deve deletar um produto quando o Id existe")
@@ -72,7 +71,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar ResourceNotFoundException ao deletar um produto com Id inexistente")
+    @DisplayName("delete deve lançar ResourceNotFoundException ao deletar um produto com Id inexistente")
     public void delete_should_ThrowResourceNotFoundException_WhenIdDoesNotExist() {
         // Arrange
         Mockito.when(productRepository.existsById(nonExistingId)).thenReturn(false);
@@ -81,7 +80,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar DatabaseException ao deletar um produto com Id dependente")
+    @DisplayName("delete deve lançar DatabaseException ao deletar um produto com Id dependente")
     public void delete_should_ThrowDatabaseException_WhenIdHasDependencies() {
         // Arrange
         Mockito.when(productRepository.existsById(dependentId)).thenReturn(true);
@@ -90,10 +89,8 @@ public class ProductServiceTest {
         Assertions.assertThrows(DatabaseException.class, () -> productService.delete(dependentId));
     }
 
-    // ----------------------------- findAll --------------------------------
-
     @Test
-    @DisplayName("Deve retornar uma página de ProductDTO")
+    @DisplayName("findAll deve retornar uma página de ProductDTO")
     public void findAll_should_ReturnPageOfProductDTO_WhenCalled() {
         // Arrange
         Mockito.when(productRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
@@ -105,10 +102,8 @@ public class ProductServiceTest {
         Mockito.verify(productRepository).findAll((Pageable) ArgumentMatchers.any());
     }
 
-    // ----------------------------- findById --------------------------------
-
     @Test
-    @DisplayName("Deve retornar ProductDTO quando o Id existe")
+    @DisplayName("findById deve retornar ProductDTO quando o Id existe")
     public void findById_should_ReturnProductDTO_WhenIdExists() {
         // Arrange
         Mockito.when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
@@ -120,7 +115,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar ResourceNotFoundException quando o Id não existe")
+    @DisplayName("findById deve lançar ResourceNotFoundException quando o Id não existe")
     public void findById_should_ThrowResourceNotFoundException_WhenIdDoesNotExist() {
         // Arrange
         Mockito.when(productRepository.findById(nonExistingId)).thenReturn(Optional.empty());
@@ -128,10 +123,8 @@ public class ProductServiceTest {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.findById(nonExistingId));
     }
 
-    // ----------------------------- insert --------------------------------
-
     @Test
-    @DisplayName("Deve retornar ProductDTO ao inserir um produto")
+    @DisplayName("insert deve retornar ProductDTO ao inserir um produto")
     public void insert_should_ReturnProductDTO_WhenValidProduct() {
         // Arrange
         Mockito.when(categoryRepository.getReferenceById(ArgumentMatchers.any())).thenReturn(new Category());
@@ -143,10 +136,8 @@ public class ProductServiceTest {
         Mockito.verify(productRepository).save(ArgumentMatchers.any());
     }
 
-    // ----------------------------- update --------------------------------
-
     @Test
-    @DisplayName("Deve retornar ProductDTO quando o Id existe")
+    @DisplayName("update deve retornar ProductDTO quando o Id existe")
     public void update_should_ReturnProductDTO_WhenIdExists() {
         // Arrange
         Mockito.when(productRepository.getReferenceById(existingId)).thenReturn(product);
@@ -160,7 +151,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar ResourceNotFoundException quando o Id não existe")
+    @DisplayName("update deve lançar ResourceNotFoundException quando o Id não existe")
     public void update_should_ThrowResourceNotFoundException_WhenIdDoesNotExist() {
         // Arrange
         Mockito.when(productRepository.getReferenceById(nonExistingId)).thenThrow(EntityNotFoundException.class);

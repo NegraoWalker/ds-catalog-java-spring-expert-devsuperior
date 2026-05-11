@@ -1,5 +1,6 @@
 package com.walker.ds_catalog_java_spring_expert_devsuperior.controller;
 
+import com.walker.ds_catalog_java_spring_expert_devsuperior.exception.DatabaseException;
 import com.walker.ds_catalog_java_spring_expert_devsuperior.exception.ResourceNotFoundException;
 import com.walker.ds_catalog_java_spring_expert_devsuperior.model.dto.ProductDTO;
 import com.walker.ds_catalog_java_spring_expert_devsuperior.service.ProductService;
@@ -20,14 +21,14 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProductController.class)
 //Carrega um contexto para o teste apenas da camada web(Controller[Simulando requisições HTTP])
+@WebMvcTest(ProductController.class)
 public class ProductControllerTest {
 
     @Autowired
@@ -162,13 +163,67 @@ public class ProductControllerTest {
         resultActions.andExpect(status().isNotFound());
     }
 
-//    @Test
-//    @DisplayName("delete deve deletar um produto quando o Id existir)
-//
-//    @Test
-//    @DisplayName("delete deve lançar um ResourceNotFoundException quando o Id não existir")
-//
-//    @Test
-//    @DisplayName("delete deve lançar um DatabaseException")
+    @Test
+    @DisplayName("insert deve retornar um ProductDTO ao inserir um produto")
+    public void insert_should_ReturnProductDTO_WhenValidProduct() throws Exception {
+        //Arrange(Preparar) - Preparar o cenário de teste: instanciar e configurar objetos, mocks, dados de entrada, comportamentos esperados de dependências
+        when(productService.insert(any(ProductDTO.class))).thenReturn(productDTO);
+        //Act(Executar) - Executar a ação que está sendo testada: chamar, executar e capturar o resultado do método a ser testado
+        ResultActions resultActions = mockMvc
+                .perform(
+                        post("/api/products")
+                                .content(jsonBody)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                );
+        //Assert(Verificar) - Verificar se o(s) resultado(s) foram os esperados
+        resultActions.andExpect(status().isCreated());
+        resultActions.andExpect(jsonPath("$.id").exists());
+        resultActions.andExpect(jsonPath("$.name").exists());
+        resultActions.andExpect(jsonPath("$.description").exists());
+    }
+
+    @Test
+    @DisplayName("delete deve deletar um produto quando o Id existir")
+    public void delete_should_DeleteProduct_WhenIdExists() throws Exception {
+        //Act(Executar) - Executar a ação que está sendo testada: chamar, executar e capturar o resultado do método a ser testado
+        ResultActions resultActions = mockMvc
+                .perform(
+                        delete("/api/products/{id}", existingId)
+                                .accept(MediaType.APPLICATION_JSON)
+                );
+        //Assert(Verificar) - Verificar se o(s) resultado(s) foram os esperados
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("delete deve lançar um ResourceNotFoundException quando o Id não existir")
+    public void delete_should_ThrowResourceNotFoundException_WhenIdDoesNotExist() throws Exception {
+        //Arrange(Preparar) - Preparar o cenário de teste: instanciar e configurar objetos, mocks, dados de entrada, comportamentos esperados de dependências
+        doThrow(ResourceNotFoundException.class).when(productService).delete(nonExistingId);
+        //Act(Executar) - Executar a ação que está sendo testada: chamar, executar e capturar o resultado do método a ser testado
+        ResultActions resultActions = mockMvc
+                .perform(
+                        delete("/api/products/{id}", nonExistingId)
+                                .accept(MediaType.APPLICATION_JSON)
+                );
+        //Assert(Verificar) - Verificar se o(s) resultado(s) foram os esperados
+        resultActions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("delete deve lançar DatabaseException ao deletar um produto com Id dependente")
+    public void delete_should_ThrowDatabaseException_WhenIdHasDependencies() throws Exception {
+        //Arrange(Preparar) - Preparar o cenário de teste: instanciar e configurar objetos, mocks, dados de entrada, comportamentos esperados de dependências
+        doThrow(DatabaseException.class).when(productService).delete(existingId);
+        //Act(Executar) - Executar a ação que está sendo testada: chamar, executar e capturar o resultado do método a ser testado
+        ResultActions resultActions = mockMvc
+                .perform(
+                        delete("/api/products/{id}", existingId)
+                                .accept(MediaType.APPLICATION_JSON)
+                );
+        //Assert(Verificar) - Verificar se o(s) resultado(s) foram os esperados
+        resultActions.andExpect(status().isBadRequest());
+    }
 
 }
